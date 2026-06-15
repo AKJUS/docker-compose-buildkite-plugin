@@ -80,7 +80,7 @@ function plugin_read_list_or_map() {
     local env_prefix="${prefix}_"
     local key
     while IFS= read -r varname ; do
-      key="${varname#${env_prefix}}"
+      key="${varname#"${env_prefix}"}"
       if ! in_array "${key}" "$@"; then
         echo "${key}=${!varname}"
       fi
