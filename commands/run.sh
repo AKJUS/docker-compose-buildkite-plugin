@@ -113,11 +113,12 @@ if [[ "$(plugin_read_config RUN_LABELS "true")" =~ ^(true|on|1)$ ]]; then
 fi
 
 # append env vars provided in ENV or ENVIRONMENT, these are newline delimited
+# supports both list format (- KEY=value) and map format (KEY: value)
 while IFS=$'\n' read -r env ; do
   [[ -n "${env:-}" ]] && run_params+=("-e" "${env}")
 done <<< "$(printf '%s\n%s' \
-  "$(plugin_read_list ENV)" \
-  "$(plugin_read_list ENVIRONMENT)")"
+  "$(plugin_read_list_or_map ENV)" \
+  "$(plugin_read_list_or_map ENVIRONMENT)")"
 
 # Propagate all environment variables into the container if requested
 if [[ "$(plugin_read_config PROPAGATE_ENVIRONMENT "false")" =~ ^(true|on|1)$ ]] ; then

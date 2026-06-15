@@ -65,6 +65,24 @@ function prefix_read_list() {
   fi
 }
 
+# Reads either a value, a list, or a map from plugin config
+# For map format (YAML object), outputs KEY=value pairs
+function plugin_read_list_or_map() {
+  local prefix="BUILDKITE_PLUGIN_DOCKER_COMPOSE_$1"
+  local list_param="${prefix}_0"
+
+  if [[ -n "${!list_param:-}" ]] || [[ -n "${!prefix:-}" ]]; then
+    prefix_read_list "$prefix"
+  else
+    local env_prefix="${prefix}_"
+    local key
+    while IFS= read -r varname ; do
+      key="${varname#${env_prefix}}"
+      echo "${key}=${!varname}"
+    done < <(compgen -v "${env_prefix}" | sort)
+  fi
+}
+
 # Reads either a value or a list from plugin config into a global result array
 # Returns success if values were read
 function plugin_read_list_into_result() {
