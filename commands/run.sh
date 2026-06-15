@@ -117,7 +117,7 @@ fi
 while IFS=$'\n' read -r env ; do
   [[ -n "${env:-}" ]] && run_params+=("-e" "${env}")
 done <<< "$(printf '%s\n%s' \
-  "$(plugin_read_list_or_map ENV)" \
+  "$(plugin_read_list_or_map ENV PROPAGATION_LIST)" \
   "$(plugin_read_list_or_map ENVIRONMENT)")"
 
 # Propagate all environment variables into the container if requested
