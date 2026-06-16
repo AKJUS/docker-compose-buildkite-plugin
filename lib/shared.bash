@@ -77,14 +77,14 @@ function plugin_read_list_or_map() {
   if [[ -n "${!list_param:-}" ]] || [[ -n "${!prefix:-}" ]]; then
     prefix_read_list "$prefix"
   else
-    local env_prefix="${prefix}_"
+    local scan_prefix="${prefix}_"
     local key
     while IFS= read -r varname ; do
-      key="${varname#"${env_prefix}"}"
+      key="${varname#"${scan_prefix}"}"
       if ! in_array "${key}" "$@"; then
         echo "${key}=${!varname}"
       fi
-    done < <(compgen -v "${env_prefix}" | sort)
+    done < <(compgen -v "${scan_prefix}" | sort)
   fi
 }
 

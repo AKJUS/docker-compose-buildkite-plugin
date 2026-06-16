@@ -114,6 +114,7 @@ fi
 
 # append env vars provided in ENV or ENVIRONMENT, these are newline delimited
 # supports both list format (- KEY=value) and map format (KEY: value)
+# PROPAGATION_LIST excludes env-propagation-list, which shares the ENV_ prefix when flattened
 while IFS=$'\n' read -r env ; do
   [[ -n "${env:-}" ]] && run_params+=("-e" "${env}")
 done <<< "$(printf '%s\n%s' \

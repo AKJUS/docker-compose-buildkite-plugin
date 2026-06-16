@@ -270,6 +270,31 @@ cmd3"
   unstub buildkite-agent
 }
 
+@test "Run with env as a map and env-propagation-list together" {
+  export BUILDKITE_PLUGIN_DOCKER_COMPOSE_RUN=myservice
+  export BUILDKITE_COMMAND=pwd
+  export BUILDKITE_PLUGIN_DOCKER_COMPOSE_CHECK_LINKED_CONTAINERS=false
+  export BUILDKITE_PLUGIN_DOCKER_COMPOSE_CLEANUP=false
+  export BUILDKITE_PLUGIN_DOCKER_COMPOSE_ENV_MY_VAR=value1
+  export BUILDKITE_PLUGIN_DOCKER_COMPOSE_ENV_PROPAGATION_LIST=LIST_OF_VARS
+  export LIST_OF_VARS="VAR_A VAR_B"
+
+  stub docker \
+    "compose -f docker-compose.yml -p buildkite1111 up -d --scale myservice=0 myservice : echo ran myservice dependencies" \
+    "compose -f docker-compose.yml -p buildkite1111 run --name buildkite1111_myservice_build_1 -e MY_VAR=value1 -e VAR_A -e VAR_B -T --rm myservice /bin/sh -e -c 'pwd' : echo ran myservice with env map and propagation list"
+
+  stub buildkite-agent \
+    "meta-data exists docker-compose-plugin-built-image-tag-myservice : exit 1"
+
+  run "$PWD"/hooks/command
+
+  assert_success
+  assert_output --partial "ran myservice with env map and propagation list"
+
+  unstub docker
+  unstub buildkite-agent
+}
+
 @test "Run without a prebuilt image with no-cache" {
   export BUILDKITE_PLUGIN_DOCKER_COMPOSE_RUN=myservice
   export BUILDKITE_PLUGIN_DOCKER_COMPOSE_NO_CACHE=true

@@ -75,9 +75,27 @@ Important: this only works when building a single service, an error will be gene
 
 A list of KEY=VALUE that are passed through as build arguments when image is being built.
 
-#### `env` or `environment` (run only, string or array)
+#### `env` or `environment` (run only, string, array, or map)
 
-A list of either KEY or KEY=VALUE that are passed through as environment variables to the container.
+Environment variables to pass through to the container. Accepts a list of `KEY` or `KEY=VALUE` strings, or a map of `KEY: VALUE` pairs — matching the format used at the pipeline and step level in Buildkite.
+
+List format:
+```yaml
+env:
+  - MY_VAR=value
+  - ANOTHER_VAR
+```
+
+Map format:
+```yaml
+env:
+  MY_VAR: value
+  ANOTHER_VAR: other
+```
+
+Only the list format supports bare keys (e.g. `- ANOTHER_VAR`) that inherit their value from the agent environment; map format requires an explicit value for each key.
+
+When using map format, keys containing consecutive underscores may also set a collapsed-underscore alias on the agent, and both forms can be passed to the container. Prefer list format for keys with consecutive underscores.
 
 #### `env-propagation-list` (run only)
 
