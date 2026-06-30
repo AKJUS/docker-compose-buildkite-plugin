@@ -91,10 +91,10 @@ configuration:
     entrypoint:
       type: string
     env:
-      type: [ string, array ]
+      type: [ string, array, object ]
       minimum: 1
     environment:
-      type: [ string, array ]
+      type: [ string, array, object ]
       minimum: 1
     env-propagation-list:
       type: string
